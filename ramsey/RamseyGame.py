@@ -8,8 +8,23 @@ from Graph import Graph
 class RamseyGame(Game):
 
     def __init__(self, n, p, q):
+        assert p >= 2 and q >= 2
         self.n = n
-        self.colors = {-1: p, 1: q}
+        # For indexing purposes colors keys must be [1, 2, ...]
+        self.colors = {1: p, 2: q}
+        # Maps index to action
+        self.index_to_action = []
+        for c in self.colors:
+            for i in range(n):
+                for j in range(i + 1, n):
+                    self.index_to_action.append((i, j, c))
+
+    # Maps action to index in action vector
+    def action_to_index(self, i, j, c):
+        assert i != j
+        if i > j:
+            i, j = j, i
+        return self.n * i + j + ((c-1) * self.n * (self.n-1) - (i+1) * (i+2)) // 2
 
     # Return a graph representing the initial board state
     def getInitGraph(self):
@@ -20,44 +35,40 @@ class RamseyGame(Game):
     def getGraphSize(self):
         return self.n
 
-    # Given a graph and an action, returns a new graph after that action has
-    # been made
-    def getNextState(self, graph, action):
+    def getActionSize(self):
+        return len(self.index_to_action)
+
+    def getNextStateFromAction(self, graph, action):
         i, j, c = action
         new_graph = deepcopy(graph)
-        new_graph.colorEdge(i, j, c)
+        new_graph.colorEdge(i, j, c, self.colors)
 
         return new_graph
 
-    # Get all valid actions
-    # Actions are in form (i, j, c) where i and j are nodes and c is the
-    # color to make edge (i, j)
+    # Given a graph and an action, returns a new graph after that action has
+    # been made
+    def getNextState(self, graph, index):
+        return self.getNextStateFromAction(graph, self.index_to_action[index])
+
+    # Get all valid actions one-hot encoded
     def getValidMoves(self, graph):
         # return a fixed size binary vector
-        actions = []
+        valid = [0] * self.getActionSize()
 
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                if graph[i, j] == 0:
+        for i, j in graph.edgeIter():
+                if not graph.hasEdge(i, j):
                     for c in self.colors:
-                        actions.append((i, j, c))
+                        valid[self.action_to_index(i, j, c)] = 1
 
-        return actions
+        return valid
 
     # Check if state is terminal by checking for monochromatic cliques of given size and color
     # and if there are uncolored edges remaining
     def getGameEnded(self, graph):
-        if graph.hasClique(self.colors):
+        if graph.has_clique:
             return True
 
-        # Check for uncolored edges
-        for i in range(self.n):
-            for j in range(i + 1, self.n):
-                if graph.getEdgeColor(i, j) == 0:
-                    return False
-
-        # All edges colored
-        return True
+        return graph.num_edges == graph.total_edges
 
     def stringRepresentation(self, graph):
         return str(graph)
@@ -67,3 +78,7 @@ class RamseyGame(Game):
     def getScore(self, graph):
         reward = graph.num_edges
         return reward - 1 if graph.has_clique else reward
+
+    def getCanonicalForm(self, graph):
+        return graph.adj_mat
+

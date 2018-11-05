@@ -23,6 +23,12 @@ class Game:
         """
         pass
 
+    def getActionSize(self):
+        pass
+
+    def getCanonicalForm(self, graph):
+        pass
+
     def getNextState(self, graph, action):
         """
         Input:
