@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import numpy as np
 sys.path.append('..')
 from NeuralNet import NeuralNet
 from RamseyNNet import RamseyNNet as onnet
@@ -36,9 +37,11 @@ class NNetWrapper(NeuralNet):
 
     # Board = graph adj_mat
     def predict(self, board):
-        pi, v = self.nnet.model.predict(board)
+        flat = board.flatten()
+        flat = flat[np.newaxis]
+        pi, v = self.nnet.model.predict(flat)
 
-        return pi, v
+        return pi[0], v[0]
 
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
         filepath = os.path.join(folder, filename)
