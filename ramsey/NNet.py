@@ -1,7 +1,9 @@
+import os
+import shutil
 import sys
 sys.path.append('..')
 from NeuralNet import NeuralNet
-import .RamseyNNet import RamseyNNet as onnet
+from RamseyNNet import RamseyNNet as onnet
 
 # List of arguments to pass to onnet
 args = {
