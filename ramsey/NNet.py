@@ -30,15 +30,18 @@ class NNetWrapper(NeuralNet):
     def train(self, examples):
         input_boards, target_pis, target_vs = list(zip(*examples))
         input_boards = np.asarray(input_boards)
+        new_input_boards = np.array([])
+        for board in input_boards:
+            new_input_boards.append(board.flatten())
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], \
+        self.nnet.model.fit(x = new_input_boards, y = [target_pis, target_vs], \
         batch_size = args["batch_size"], epochs = args["epochs"])
 
     # Board = graph adj_mat
     def predict(self, board):
         flat = board.flatten()
-        flat = flat[np.newaxis]
+        flat = flat[np.newaxis, :]
         pi, v = self.nnet.model.predict(flat)
 
         return pi[0], v[0]

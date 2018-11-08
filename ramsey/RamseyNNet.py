@@ -15,14 +15,13 @@ class RamseyNNet():
         self.args = args
 
         # Neural Net
-        self.model = Sequential()
-        self.model.add(Dense(50, activation = "relu", input_dim = self.graphSize * self.graphSize))
-        self.model.add(Dropout(0.3, noise_shape=None, seed=None))
-        self.model.add(Dense(50, activation = "relu"))
-        self.model.add(Dropout(0.2, noise_shape=None, seed=None))
-        self.model.add(Dense(50, activation = "relu"))
+        self.input_boards = Input(shape = (self.graphSize * self.graphSize, ))
+        layer1 = Dense(50, activation = "relu")(self.input_boards)
+        dropout1 = Dropout(0.3, noise_shape=None, seed=None)(layer1)
+        layer2 = Dense(50, activation = "relu")(dropout1)
+        dropout2 = Dropout(0.3, noise_shape=None, seed=None)(layer2)
 
-        self.pi = Dense(self.action_size, activation='softmax', name='pi')   # batch_size x self.action_size
-        self.v = Dense(1, activation='tanh', name='v')
+        self.pi = Dense(self.action_size, activation='softmax', name='pi')(dropout2)   # batch_size x self.action_size
+        self.v = Dense(1, activation='tanh', name='v')(dropout2)
 
-        self.model.add(Dense(1, activation = "sigmoid"))
+        self.model = Model(input = self.input_boards, outputs = [self.pi, self.v])
