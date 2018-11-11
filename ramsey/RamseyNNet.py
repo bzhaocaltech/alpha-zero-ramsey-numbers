@@ -24,4 +24,4 @@ class RamseyNNet():
         self.pi = Dense(self.action_size, activation='softmax', name='pi')(dropout2)   # batch_size x self.action_size
         self.v = Dense(1, activation='tanh', name='v')(dropout2)
 
-        self.model = Model(input = self.input_boards, outputs = [self.pi, self.v])
+        self.model = Model(inputs = self.input_boards, outputs = [self.pi, self.v])
