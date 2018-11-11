@@ -32,3 +32,5 @@ game = RamseyGame(5, 3, 3)
 nnet = NNetWrapper(game)
 state = game.getInitGraph()
 nnet.predict(state.adj_mat)
+examples = [[state.adj_mat, game.getActionSize() * [0.1], 1]]
+nnet.train(examples)

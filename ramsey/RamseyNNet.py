@@ -17,11 +17,12 @@ class RamseyNNet():
         # Neural Net
         self.input_boards = Input(shape = (self.graphSize * self.graphSize, ))
         layer1 = Dense(50, activation = "relu")(self.input_boards)
-        dropout1 = Dropout(0.3, noise_shape=None, seed=None)(layer1)
+        dropout1 = Dropout(args["dropout"], noise_shape=None, seed=None)(layer1)
         layer2 = Dense(50, activation = "relu")(dropout1)
-        dropout2 = Dropout(0.3, noise_shape=None, seed=None)(layer2)
+        dropout2 = Dropout(args["dropout"], noise_shape=None, seed=None)(layer2)
 
         self.pi = Dense(self.action_size, activation='softmax', name='pi')(dropout2)   # batch_size x self.action_size
         self.v = Dense(1, activation='tanh', name='v')(dropout2)
 
         self.model = Model(inputs = self.input_boards, outputs = [self.pi, self.v])
+        self.model.compile(loss=['categorical_crossentropy','mean_squared_error'], optimizer=Adam(args["lr"]))

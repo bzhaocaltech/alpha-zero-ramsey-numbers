@@ -12,8 +12,6 @@ args = {
     'dropout': 0.3,
     'epochs': 10,
     'batch_size': 64,
-    'cuda': False,
-    'num_channels': 512,
 }
 
 class NNetWrapper(NeuralNet):
@@ -30,9 +28,10 @@ class NNetWrapper(NeuralNet):
     def train(self, examples):
         input_boards, target_pis, target_vs = list(zip(*examples))
         input_boards = np.asarray(input_boards)
-        new_input_boards = np.array([])
+        new_input_boards = []
         for board in input_boards:
             new_input_boards.append(board.flatten())
+        new_input_boards = np.array(new_input_boards)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
         self.nnet.model.fit(x = new_input_boards, y = [target_pis, target_vs], \
