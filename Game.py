@@ -78,3 +78,6 @@ class Game:
                          Required by MCTS for hashing.
         """
         pass
+
+    def getScore(self, graph):
+        pass
