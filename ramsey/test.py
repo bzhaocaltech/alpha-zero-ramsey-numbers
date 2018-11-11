@@ -31,4 +31,4 @@ from NNet import *
 game = RamseyGame(5, 3, 3)
 nnet = NNetWrapper(game)
 state = game.getInitGraph()
-nnet.predict(state.adj_mat)
+print(nnet.predict(state.adj_mat))

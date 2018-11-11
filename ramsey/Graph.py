@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from itertools import combinations
 
+
 # Undirected graph represented by adjacency matrix with values serving as colors
 class Graph:
     # Constructor for graph.

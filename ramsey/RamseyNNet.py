@@ -26,3 +26,4 @@ class RamseyNNet:
         self.v = Dense(1, activation='tanh', name='v')(dropout2)
 
         self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
+
