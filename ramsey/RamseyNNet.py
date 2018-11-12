@@ -7,7 +7,8 @@ from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
 
-class RamseyNNet():
+
+class RamseyNNet:
     def __init__(self, game, args):
         # game params
         self.graphSize = game.getGraphSize()
@@ -15,6 +16,7 @@ class RamseyNNet():
         self.args = args
 
         # Neural Net
+
         self.input_boards = Input(shape = (self.graphSize * self.graphSize, ))
         layer1 = Dense(50, activation = "relu")(self.input_boards)
         dropout1 = Dropout(args["dropout"], noise_shape=None, seed=None)(layer1)
@@ -24,5 +26,6 @@ class RamseyNNet():
         self.pi = Dense(self.action_size, activation='softmax', name='pi')(dropout2)   # batch_size x self.action_size
         self.v = Dense(1, activation='tanh', name='v')(dropout2)
 
-        self.model = Model(inputs = self.input_boards, outputs = [self.pi, self.v])
+
+        self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
         self.model.compile(loss=['categorical_crossentropy','mean_squared_error'], optimizer=Adam(args["lr"]))
